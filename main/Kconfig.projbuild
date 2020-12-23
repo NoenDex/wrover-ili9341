@@ -154,20 +154,27 @@ menu "TFT Configuration"
     config MOSI_GPIO
         int "MOSI GPIO number"
         range 0 46
-        default 23 if IDF_TARGET_ESP32
-        default 35 if IDF_TARGET_ESP32S2
+        default 23
         help
             GPIO number (IOxx) to SPI MOSI.
             Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to DC.
             On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
             On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
 
-
+	config MISO_GPIO
+		int "MISO GPIO number"
+		range 0 46
+		default 19
+		help
+			GPIO number (IOxx) to SPI MISO.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to DC.
+			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
+			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
+		
     config SCLK_GPIO
         int "SCLK GPIO number"
         range 0 46
-        default 18 if IDF_TARGET_ESP32
-        default 36 if IDF_TARGET_ESP32S2
+        default 18
         help
             GPIO number (IOxx) to SPI SCLK.
             Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to DC.
@@ -177,8 +184,7 @@ menu "TFT Configuration"
 	config CS_GPIO
 		int "CS GPIO number"
 		range 0 46
-		default 14 if IDF_TARGET_ESP32
-		default 34 if IDF_TARGET_ESP32S2
+		default 5
 		help
 			GPIO number (IOxx) to SPI CS.
 			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to CS.
@@ -188,8 +194,7 @@ menu "TFT Configuration"
 	config DC_GPIO
 		int "DC GPIO number"
 		range 0 46
-		default 27 if IDF_TARGET_ESP32
-		default 37 if IDF_TARGET_ESP32S2
+		default 27
 		help
 			GPIO number (IOxx) to SPI DC.
 			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to DC.
@@ -199,8 +204,7 @@ menu "TFT Configuration"
 	config RESET_GPIO
 		int "RESET GPIO number"
 		range -1 46
-		default 33 if IDF_TARGET_ESP32
-		default 38 if IDF_TARGET_ESP32S2
+		default 33
 		help
 			GPIO number (IOxx) to RESET.
 			When it is -1, the RESET isn't performed.
@@ -211,8 +215,7 @@ menu "TFT Configuration"
 	config BL_GPIO
 		int "BACKLIGHT GPIO number"
 		range -1 46
-		default 32 if IDF_TARGET_ESP32
-		default 39 if IDF_TARGET_ESP32S2
+		default 32
 		help
 			GPIO number (IOxx) to BACKLIGHT.
 			When it is -1, BACKLIGHT isn't performed.
@@ -232,5 +235,24 @@ menu "TFT Configuration"
 		help
 			Change BGR color filter to RGB color filter
 
+	config TOUCH_CS_GPIO
+		int "TOUCH CS GPIO number"
+		range 0 46
+		default 4
+		help
+			GPIO number (IOxx) to SPI CS.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to CS.
+			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
+			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
 
+	config TOUCH_IRQ_GPIO
+		int "TOUCH IRQ GPIO number"
+		range 0 46
+		default 34
+		help
+			GPIO number (IOxx) for XPT2046 IRQ.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to CS.
+			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
+			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
+		
 endmenu
