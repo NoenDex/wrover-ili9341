@@ -1214,7 +1214,8 @@ void lcdDrawFillArrow(TFT_t *dev, uint16_t x0, uint16_t y0, uint16_t x1,
 // Bit image "RRRRRGGGGGGBBBBB"
 uint16_t rgb565_conv(uint16_t r, uint16_t g, uint16_t b)
 {
-  return (((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3));
+//  return (((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3));
+  return ((((r >> 3) << 11) & 0xf800) | (((g >> 2) << 5) & 0x07e0) | ((b >> 3) & 0x001f));
 }
 
 // Draw ASCII character

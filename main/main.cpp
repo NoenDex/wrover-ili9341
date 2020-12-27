@@ -21,13 +21,19 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+extern "C"
+{
 #include "bmpfile.h"
 #include "decode_image.h"
 #include "fontx.h"
 #include "ili9340.h"
 #include "pngle.h"
-
 #include "dac_init.h"
+}
+
+#include "Button.h"
+#include "Point.h"
+#include "Screen.h"
 
 #define MOUNT_POINT "/sdcard"
 #define SPI_DMA_CHAN 1
@@ -83,7 +89,7 @@ static void list_directory(char *path, bool show_all_files)
   closedir(dir);
 }
 
-TickType_t FillTest(TFT_t *dev, int width, int height)
+TickType_t FillTest(TFT_t *dev, [[maybe_unused]]int width, [[maybe_unused]]int height)
 {
   TickType_t startTick, endTick, diffTick;
   startTick = xTaskGetTickCount();
@@ -640,7 +646,7 @@ TickType_t ScrollTest(TFT_t *dev, FontxFile *fx, int width, int height)
   return diffTick;
 }
 
-void ScrollReset(TFT_t *dev, int width, int height)
+void ScrollReset(TFT_t *dev, [[maybe_unused]]int width, int height)
 {
   // lcdResetScrollArea(dev, 320);
   // lcdResetScrollArea(dev, 240);
@@ -775,7 +781,7 @@ TickType_t BMPTest(TFT_t *dev, char *file, int width, int height)
       // Bitmap is stored bottom-to-top order (normal BMP)
       int pos = result->header.offset + (h - 1 - row) * rowSize;
       fseek(fp, pos, SEEK_SET);
-      int buffidx = sizeof(sdbuffer); // Force buffer reload
+      uint buffidx = sizeof(sdbuffer); // Force buffer reload
 
       int index = 0;
       for (int col = 0; col < w; col++)
@@ -942,7 +948,7 @@ void png_draw(pngle_t *pngle, uint32_t x, uint32_t y, uint32_t w, uint32_t h,
   }
 }
 
-void png_finish(pngle_t *pngle) { ESP_LOGD(__FUNCTION__, "png_finish"); }
+void png_finish([[maybe_unused]] pngle_t *pngle) { ESP_LOGD(__FUNCTION__, "png_finish"); }
 
 TickType_t PNGTest(TFT_t *dev, char *file, int width, int height)
 {
@@ -1061,7 +1067,7 @@ TickType_t PNGTest(TFT_t *dev, char *file, int width, int height)
   return diffTick;
 }
 
-void ILI9341(void *pvParameters)
+void ILI9341([[maybe_unused]]void *pvParameters)
 {
   // set font file
   FontxFile fx16G[2];
@@ -1114,17 +1120,35 @@ void ILI9341(void *pvParameters)
   lcdBGRFilter(&dev);
 #endif
 
-  FillTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
+  //  FillTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
   // WAIT;
 
   int16_t x = 0;
   int16_t y = 0;
-  
+
   ESP_LOGI(TAG, "Touch test start");
+
+  TGUI::Screen screen(&dev);
+  TGUI::Button button("OK");
+  button.set_coordinates(TGUI::Point(10, 10), TGUI::Point(60, 40));
+  button.set_color(screen.get_context().rgb565(0xF5, 0xA7, 0x3B)); // orange
+
+  screen.clear();
+  screen.add_widget(&button);
+
+  ESP_LOGI(TAG, "Total widgets: %d", (int)screen.widgets_count());
+
+  screen.update();
+
   while (true)
   {
     if (xpt2046_read(&dev, &x, &y))
     {
+//      lcdFillScreen(&dev, BLACK);
+//      lcdDrawFillCircle(&dev, x, y, 3, RED);
+
+        screen.clear();
+        screen.update();
       ESP_LOGI(TAG, "XPT2046 [x: %d y: %d]", x, y);
     }
   }
@@ -1289,8 +1313,10 @@ void init_sd_card(void)
       .quadwp_io_num = -1,
       .quadhd_io_num = -1,
       .max_transfer_sz = 4000,
+      .flags = 0,
+      .intr_flags = 0,
   };
-  ret = spi_bus_initialize(host.slot, &bus_cfg, SPI_DMA_CHAN);
+  ret = spi_bus_initialize((spi_host_device_t)host.slot, &bus_cfg, SPI_DMA_CHAN);
   if (ret != ESP_OK)
   {
     ESP_LOGE(TAG, "Failed to initialize SD card SPI bus.");
@@ -1298,8 +1324,8 @@ void init_sd_card(void)
   }
 
   sdspi_device_config_t slot_config = SDSPI_DEVICE_CONFIG_DEFAULT();
-  slot_config.gpio_cs = CONFIG_SD_CS_GPIO;
-  slot_config.host_id = host.slot;
+  slot_config.gpio_cs = (gpio_num_t)CONFIG_SD_CS_GPIO;
+  slot_config.host_id = (spi_host_device_t)host.slot;
   ret = esp_vfs_fat_sdspi_mount(mount_point, &host, &slot_config, &mount_config,
                                 &card);
   if (ret != ESP_OK)
@@ -1319,7 +1345,7 @@ void init_sd_card(void)
   }
 
   ESP_LOGI(TAG, "SD CARD:");
-  list_directory(MOUNT_POINT, false);
+  list_directory((char *)MOUNT_POINT, false);
 }
 
 void init_spiffs(void)
@@ -1361,11 +1387,11 @@ void init_spiffs(void)
   }
   else
   {
-    ESP_LOGI(TAG, "Partition size: total: %d, used: %d", total, used);
+    ESP_LOGI(TAG, "Partition size: total: %d, used: %d", (int)total, (int)used);
   }
 
   ESP_LOGI(TAG, "SPIFFS:");
-  list_directory("/spiffs/", true);
+  list_directory((char *)"/spiffs/", true);
 }
 
 void PlayTask(__attribute__((unused)) void *pvParameters)
@@ -1378,14 +1404,17 @@ void PlayTask(__attribute__((unused)) void *pvParameters)
   }
 }
 
-void app_main(void)
+extern "C"
 {
-  init_spiffs();
-  init_sd_card();
-  if (init_i2s() != ESP_OK)
+  void app_main(void)
   {
-    ESP_LOGE(TAG, "Error in I2S bus initialization!");
+    init_spiffs();
+    init_sd_card();
+    if (init_i2s() != ESP_OK)
+    {
+      ESP_LOGE(TAG, "Error in I2S bus initialization!");
+    }
+    xTaskCreate(ILI9341, "ILI9341", 1024 * 6, NULL, 2, NULL);
+    xTaskCreate(PlayTask, "Play", 1024 * 6, NULL, 10, NULL);
   }
-  xTaskCreate(ILI9341, "ILI9341", 1024 * 6, NULL, 2, NULL);
-  xTaskCreate(PlayTask, "Play", 1024 * 6, NULL, 10, NULL);
 }

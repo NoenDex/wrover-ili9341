@@ -23,7 +23,9 @@ static const i2s_config_t i2s_config = {
     .dma_buf_count = 8,  // max buffers
     .dma_buf_len = 1024, // max value
     .use_apll = false,
-    .tx_desc_auto_clear = true};
+    .tx_desc_auto_clear = true,
+    .fixed_mclk = 0 //
+};
 
 static const i2s_pin_config_t pin_config = {
     .bck_io_num = I2S_BCK_IO,

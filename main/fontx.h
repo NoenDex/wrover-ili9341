@@ -1,4 +1,7 @@
 #ifndef MAIN_FONTX_H_
+
+#include <stdint.h>
+
 #define MAIN_FONTX_H_
 #define FontxGlyphBufSize (32*32/8)
 

@@ -1,6 +1,8 @@
 #ifndef __bmpfile_h__
 #define __bmpfile_h__
 
+#include <stdint.h>
+
 typedef struct {
   uint8_t magic[2];   /* the magic number used to identify the BMP file:
                          0x42 0x4D (Hex code points for B and M).

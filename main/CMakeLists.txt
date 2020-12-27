@@ -1,10 +1,16 @@
 set(srcs 
-    "main.c"
-    "dac_init.c"
-    "ili9340"
-    "fontx.c"
-    "pngle.c"
-    )
+   "main.cpp"
+   "dac_init.c"
+   "ili9340"
+   "fontx.c"
+   "pngle.c"
+   # CPP 
+   "Button.cpp"
+   "DrawingContext.cpp"
+   "Point.cpp"
+   "Screen.cpp"
+   "Widget.cpp"
+)
 
 # Only ESP32 has enough memory to do jpeg decoding
 if(IDF_TARGET STREQUAL "esp32")

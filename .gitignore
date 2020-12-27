@@ -2,3 +2,8 @@ build/
 .vscode/
 unused/
 *.old
+*.pro*
+Makefile.*
+debug/
+CMakeLists.txt.user
+*.stash
