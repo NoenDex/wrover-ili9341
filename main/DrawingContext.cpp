@@ -1,34 +1,41 @@
 #include "DrawingContext.h"
 
-namespace TGUI {
+namespace TGUI
+{
+
+  void DrawingContext::put_pixel(Point p, uint16_t color)
+  {
+    assert(m_dev != nullptr);
+    lcdDrawPixel(m_dev, p.get_x(), p.get_y(), color);
+  }
 
   void DrawingContext::rectangle(Point p1, Point p2, uint16_t color)
   {
-    assert(m_dev!=nullptr);
+    assert(m_dev != nullptr);
     lcdDrawRect(m_dev, p1.get_x(), p1.get_y(), p2.get_x(), p2.get_y(), color);
   }
 
   void DrawingContext::fill_rectangle(Point p1, Point p2, uint16_t color)
   {
-    assert(m_dev!=nullptr);
+    assert(m_dev != nullptr);
     lcdDrawFillRect(m_dev, p1.get_x(), p1.get_y(), p2.get_x(), p2.get_y(), color);
   }
 
   void DrawingContext::fill_screen(uint16_t color)
   {
-    assert(m_dev!=nullptr);
+    assert(m_dev != nullptr);
     lcdFillScreen(m_dev, color);
   }
 
   void DrawingContext::line(Point p1, Point p2, uint16_t color)
   {
-    assert(m_dev!=nullptr);
+    assert(m_dev != nullptr);
     lcdDrawLine(m_dev, p1.get_x(), p1.get_y(), p2.get_x(), p2.get_y(), color);
   }
 
   void DrawingContext::circle(Point center, uint16_t radius, uint16_t color)
   {
-    assert(m_dev!=nullptr);
+    assert(m_dev != nullptr);
     lcdDrawCircle(m_dev, center.get_x(), center.get_y(), radius, color);
   }
 
@@ -36,5 +43,4 @@ namespace TGUI {
   {
     return rgb565_conv(r, g, b);
   }
-
-}
+} // namespace TGUI

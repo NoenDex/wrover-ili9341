@@ -95,13 +95,13 @@ void DumpFontx(FontxFile *fxs)
 	}
 }
 
-uint8_t getFortWidth(FontxFile *fx) {
-	printf("fx->w=%d\n",fx->w);
+uint8_t getFontWidth(FontxFile *fx) {
+	// printf("fx->w=%d\n",fx->w);
 	return(fx->w);
 }
 
-uint8_t getFortHeight(FontxFile *fx) {
-	printf("fx->h=%d\n",fx->h);
+uint8_t getFontHeight(FontxFile *fx) {
+	// printf("fx->h=%d\n",fx->h);
 	return(fx->h);
 }
 

@@ -7,7 +7,6 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/unistd.h>
-// #include <driver/sdmmc_host.h>
 #include "dirent.h"
 
 #include "esp_err.h"
@@ -89,7 +88,7 @@ static void list_directory(char *path, bool show_all_files)
   closedir(dir);
 }
 
-TickType_t FillTest(TFT_t *dev, [[maybe_unused]]int width, [[maybe_unused]]int height)
+TickType_t FillTest(TFT_t *dev, [[maybe_unused]] int width, [[maybe_unused]] int height)
 {
   TickType_t startTick, endTick, diffTick;
   startTick = xTaskGetTickCount();
@@ -646,7 +645,7 @@ TickType_t ScrollTest(TFT_t *dev, FontxFile *fx, int width, int height)
   return diffTick;
 }
 
-void ScrollReset(TFT_t *dev, [[maybe_unused]]int width, int height)
+void ScrollReset(TFT_t *dev, [[maybe_unused]] int width, int height)
 {
   // lcdResetScrollArea(dev, 320);
   // lcdResetScrollArea(dev, 240);
@@ -1067,22 +1066,22 @@ TickType_t PNGTest(TFT_t *dev, char *file, int width, int height)
   return diffTick;
 }
 
-void ILI9341([[maybe_unused]]void *pvParameters)
+void ILI9341([[maybe_unused]] void *pvParameters)
 {
   // set font file
   FontxFile fx16G[2];
   FontxFile fx24G[2];
   FontxFile fx32G[2];
-  InitFontx(fx16G, "/spiffs/ILGH16XB.FNT", ""); // 8x16Dot Gothic
-  InitFontx(fx24G, "/spiffs/ILGH24XB.FNT", ""); // 12x24Dot Gothic
-  InitFontx(fx32G, "/spiffs/ILGH32XB.FNT", ""); // 16x32Dot Gothic
+  InitFontx(fx16G, MOUNT_POINT "/font/ILGH16XB.FNT", ""); // 8x16Dot Gothic
+  InitFontx(fx24G, MOUNT_POINT "/font/ILGH24XB.FNT", ""); // 12x24Dot Gothic
+  InitFontx(fx32G, MOUNT_POINT "/font/ILGH32XB.FNT", ""); // 16x32Dot Gothic
 
   FontxFile fx16M[2];
   FontxFile fx24M[2];
   FontxFile fx32M[2];
-  InitFontx(fx16M, "/spiffs/ILMH16XB.FNT", ""); // 8x16Dot Mincyo
-  InitFontx(fx24M, "/spiffs/ILMH24XB.FNT", ""); // 12x24Dot Mincyo
-  InitFontx(fx32M, "/spiffs/ILMH32XB.FNT", ""); // 16x32Dot Mincyo
+  InitFontx(fx16M, MOUNT_POINT "/font/ILMH16XB.FNT", ""); // 8x16Dot Mincyo
+  InitFontx(fx24M, MOUNT_POINT "/font/ILMH24XB.FNT", ""); // 12x24Dot Mincyo
+  InitFontx(fx32M, MOUNT_POINT "/font/ILMH32XB.FNT", ""); // 16x32Dot Mincyo
 
   TFT_t dev;
   spi_master_init(&dev, CONFIG_MISO_GPIO, CONFIG_MOSI_GPIO, CONFIG_SCLK_GPIO,
@@ -1130,25 +1129,27 @@ void ILI9341([[maybe_unused]]void *pvParameters)
 
   TGUI::Screen screen(&dev);
   TGUI::Button button("OK");
-  button.set_coordinates(TGUI::Point(10, 10), TGUI::Point(60, 40));
-  button.set_color(screen.get_context().rgb565(0xF5, 0xA7, 0x3B)); // orange
+  button.set_coordinates(TGUI::Point(10, 10), TGUI::Point(80, 40));
+  // button.set_color(screen.get_context().rgb565(0xF5, 0xA7, 0x3B)); // orange
 
   screen.clear();
   screen.add_widget(&button);
+  screen.load_font(MOUNT_POINT "/font/zap-light16.psf");
 
   ESP_LOGI(TAG, "Total widgets: %d", (int)screen.widgets_count());
 
   screen.update();
-
+  screen.draw_char(0xdb, TGUI::Point(30, 130), 0xffe0);
   while (true)
   {
     if (xpt2046_read(&dev, &x, &y))
     {
-//      lcdFillScreen(&dev, BLACK);
-//      lcdDrawFillCircle(&dev, x, y, 3, RED);
+      //      lcdFillScreen(&dev, BLACK);
+      //      lcdDrawFillCircle(&dev, x, y, 3, RED);
 
-        screen.clear();
-        screen.update();
+      screen.clear();
+      screen.update();
+      screen.draw_text("NoenDex", TGUI::Point(30, 100), 0xFFE0);
       ESP_LOGI(TAG, "XPT2046 [x: %d y: %d]", x, y);
     }
   }
@@ -1344,8 +1345,8 @@ void init_sd_card(void)
     return;
   }
 
-  ESP_LOGI(TAG, "SD CARD:");
-  list_directory((char *)MOUNT_POINT, false);
+  // ESP_LOGI(TAG, "SD CARD:");
+  // list_directory((char *)MOUNT_POINT, false);
 }
 
 void init_spiffs(void)
@@ -1408,7 +1409,7 @@ extern "C"
 {
   void app_main(void)
   {
-    init_spiffs();
+    // init_spiffs();
     init_sd_card();
     if (init_i2s() != ESP_OK)
     {

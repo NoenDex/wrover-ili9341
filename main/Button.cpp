@@ -2,12 +2,13 @@
 
 namespace TGUI
 {
-  void Button::update() {
-    m_p2.set_x(m_p1.get_x()+m_width);
-    m_p2.set_y(m_p1.get_y()+m_height);
+  void Button::update()
+  {
+    m_p2.set_x(m_p1.get_x() + m_width);
+    m_p2.set_y(m_p1.get_y() + m_height);
   }
 
-  void Button::paint(DrawingContext* context)
+  void Button::paint(DrawingContext *context)
   {
     context->fill_rectangle(m_p1, m_p2, m_color);
   }
