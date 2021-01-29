@@ -40,7 +40,7 @@ namespace TGUI
         }
         m_font->header = m_header;
         size_t glyph_data_size = m_header->char_size * 256;
-        if (m_header->mode == 1)
+        if (m_header->mode == 3)
         { // 512 glyph mode
             ESP_LOGI(TAG, "512 chars glyph mode");
             glyph_data_size = m_header->char_size * 512;
@@ -56,6 +56,7 @@ namespace TGUI
             free(m_glyphs);
             return;
         }
+        
         fseek(font_file_h, sizeof(PSF1_header), SEEK_SET);
         if (fread(m_glyphs, glyph_data_size, 1, font_file_h) == 0)
         {

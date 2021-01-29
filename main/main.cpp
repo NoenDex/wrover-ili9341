@@ -1134,12 +1134,18 @@ void ILI9341([[maybe_unused]] void *pvParameters)
 
   screen.clear();
   screen.add_widget(&button);
-  screen.load_font(MOUNT_POINT "/font/zap-light16.psf");
+  // https://www.zap.org.au/projects/console-fonts-zap/
+  screen.load_font(MOUNT_POINT "/font/zap-ext-vga16.psf");
 
   ESP_LOGI(TAG, "Total widgets: %d", (int)screen.widgets_count());
 
   screen.update();
-  screen.draw_char(0xdb, TGUI::Point(30, 130), 0xffe0);
+  // ASCII chars test
+  screen.draw_char(0xcb, TGUI::Point(30, 130), 0xffe0);
+  screen.draw_char(0xa0, TGUI::Point(38, 130), 0xffe0);
+  screen.draw_char(0xdb, TGUI::Point(46, 130), 0xffe0);
+  // Draw text
+  screen.draw_text("NoenDex", TGUI::Point(30, 100), 0xFFE0);
   while (true)
   {
     if (xpt2046_read(&dev, &x, &y))
@@ -1147,9 +1153,9 @@ void ILI9341([[maybe_unused]] void *pvParameters)
       //      lcdFillScreen(&dev, BLACK);
       //      lcdDrawFillCircle(&dev, x, y, 3, RED);
 
-      screen.clear();
-      screen.update();
-      screen.draw_text("NoenDex", TGUI::Point(30, 100), 0xFFE0);
+      // screen.clear();
+      // screen.update();
+      
       ESP_LOGI(TAG, "XPT2046 [x: %d y: %d]", x, y);
     }
   }
