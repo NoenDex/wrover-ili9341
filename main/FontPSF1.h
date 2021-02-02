@@ -1,9 +1,10 @@
 #pragma once
 
-// PSF mode 1 fonts from: https://www.zap.org.au/projects/console-fonts-zap/
+// PSF fonts from: https://www.zap.org.au/projects/console-fonts-zap/
 
 #include "DrawingContext.h"
 #include "Point.h"
+#include "Font.h"
 
 namespace TGUI
 {
@@ -32,16 +33,16 @@ namespace TGUI
         void *glyphs;
     };
 
-    class FontPSF1
+    class FontPSF1 :  public Font
     {
     public:
-        FontPSF1() {}
         FontPSF1(const char *font_file, DrawingContext *context);
         ~FontPSF1();
-        void draw_char(const char, Point, uint16_t color);
-        void draw_text(const char *, Point, uint16_t color);
+        void draw_char(const char, Point, uint16_t color) override;
+        void draw_text(const char *, Point, uint16_t color) override;
 
     private:
+        FontPSF1() {}
         PSF1_font *m_font{nullptr};
         DrawingContext *m_context{nullptr};
     };

@@ -1135,17 +1135,20 @@ void ILI9341([[maybe_unused]] void *pvParameters)
   screen.clear();
   screen.add_widget(&button);
   // https://www.zap.org.au/projects/console-fonts-zap/
+  // PSF1
   screen.load_font(MOUNT_POINT "/font/zap-ext-vga16.psf");
+  // PSF2
+  // screen.load_font(MOUNT_POINT "/font/zap-ext-light20_type_2.psf");
 
   ESP_LOGI(TAG, "Total widgets: %d", (int)screen.widgets_count());
 
   screen.update();
   // ASCII chars test
-  screen.draw_char(0xcb, TGUI::Point(30, 130), 0xffe0);
-  screen.draw_char(0xa0, TGUI::Point(38, 130), 0xffe0);
-  screen.draw_char(0xdb, TGUI::Point(46, 130), 0xffe0);
+  screen.draw_char(0xcb, TGUI::Point(30, 70), WHITE);
+  screen.draw_char(0xa0, TGUI::Point(42, 70), screen.get_context().rgb565(0xFF, 0x87, 0x36)); // orange
+  screen.draw_char(0xdb, TGUI::Point(54, 70), YELLOW);
   // Draw text
-  screen.draw_text("NoenDex", TGUI::Point(30, 100), 0xFFE0);
+  screen.draw_text("Hey, this is PSF font", TGUI::Point(5, 100), GREEN);
   while (true)
   {
     if (xpt2046_read(&dev, &x, &y))
@@ -1155,7 +1158,7 @@ void ILI9341([[maybe_unused]] void *pvParameters)
 
       // screen.clear();
       // screen.update();
-      
+
       ESP_LOGI(TAG, "XPT2046 [x: %d y: %d]", x, y);
     }
   }

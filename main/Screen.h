@@ -3,6 +3,7 @@
 #include "Widget.h"
 #include "Point.h"
 #include "FontPSF1.h"
+#include "FontPSF2.h"
 #include "DrawingContext.h"
 #include <vector>
 #include <memory>
@@ -14,6 +15,7 @@ extern "C"
 
 namespace TGUI
 {
+
   class Screen
   {
   public:
@@ -30,9 +32,12 @@ namespace TGUI
     DrawingContext get_context() const { return context; }
 
   private:
+    bool is_PSF1_font(const char *font_path);
+    bool is_PSF2_font(const char *font_path);
+
     std::vector<Widget *> m_widgets;
     DrawingContext context;
-    FontPSF1 *m_font;
+    Font *m_font;
   };
 
 } // namespace TGUI

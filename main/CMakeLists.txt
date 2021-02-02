@@ -8,6 +8,7 @@ set(srcs
    "Button.cpp"
    "DrawingContext.cpp"
    "FontPSF1.cpp"
+   "FontPSF2.cpp"
    "Point.cpp"
    "Screen.cpp"
    "Widget.cpp"

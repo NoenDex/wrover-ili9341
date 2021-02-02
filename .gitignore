@@ -7,3 +7,4 @@ Makefile.*
 debug/
 CMakeLists.txt.user
 *.stash
+debug.log

@@ -1,6 +1,9 @@
 #include "Screen.h"
 #include <algorithm>
 #include <memory>
+#include "esp_log.h"
+
+static const char *TAG = "Screen";
 
 namespace TGUI
 {
@@ -19,9 +22,67 @@ namespace TGUI
     m_widgets.push_back(widget);
   }
 
+  bool Screen::is_PSF1_font(const char *font_path)
+  {
+    unsigned char magic[2];
+    FILE *font_file;
+    font_file = fopen(font_path, "rb");
+    if (!font_file)
+    {
+      ESP_LOGE(TAG, "\"%s\" could not be opened!", font_path);
+      return false;
+    }
+    if (!fread((char *)&magic, sizeof(char), 2, font_file))
+    {
+      ESP_LOGE(TAG, "Reading font header failed");
+      fclose(font_file);
+      return false;
+    }
+    fclose(font_file);
+    if (magic[0] != PSF1_MAGIC0 || magic[1] != PSF1_MAGIC1)
+    {
+      return false;
+    }
+    return true;
+  }
+
+  bool Screen::is_PSF2_font(const char *font_path)
+  {
+    unsigned char magic[4];
+    FILE *font_file;
+    font_file = fopen(font_path, "rb");
+    if (!font_file)
+    {
+      ESP_LOGE(TAG, "\"%s\" could not be opened!", font_path);
+      return false;
+    }
+    if (!fread((char *)&magic, sizeof(char), 4, font_file))
+    {
+      ESP_LOGE(TAG, "Reading font header failed");
+      fclose(font_file);
+      return false;
+    }
+    fclose(font_file);
+    if (magic[0] != PSF2_MAGIC0 || magic[1] != PSF2_MAGIC1)
+    {
+      return false;
+    }
+    return true;
+  }
+
   void Screen::load_font(const char *font_path)
   {
-    m_font = new FontPSF1(font_path, &context);
+    if (is_PSF1_font(font_path))
+    {
+      m_font = new FontPSF1(font_path, &context);
+      return;
+    }
+
+    if (is_PSF2_font(font_path))
+    {
+      m_font = new FontPSF2(font_path, &context);
+      return;
+    }
   }
 
   void Screen::draw_char(char c, Point p, uint16_t color)
