@@ -86,11 +86,12 @@
 | WP     | any GPIO | any GPIO |
 
 ## DAC CS4344
-
-MCLK - GPIO0
-SCBLK - GPIO26
-LRCLK - GPIO25
-SDIN - GPIO2
+|Signal|GPIO|
+|------|----|
+|MCLK | GPIO0|
+|SCBLK | GPIO26|
+|LRCLK | GPIO25|
+|SDIN | GPIO2|
 
 example config:
 ```
