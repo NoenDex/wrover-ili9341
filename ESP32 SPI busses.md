@@ -86,14 +86,18 @@
 | WP     | any GPIO | any GPIO |
 
 ## DAC CS4344
-|Signal|GPIO|
-|------|----|
-|MCLK | GPIO0|
-|SCBLK | GPIO26|
-|LRCLK | GPIO25|
-|SDIN | GPIO2|
+
+---
+
+| Signal | GPIO   | Description                          |
+| ------ | ------ | ------------------------------------ |
+| MCLK   | GPIO0  | Master Clock (typically 256 x LRCLK) |
+| SCBLK  | GPIO26 | Serial Bit Clock (Left/Right Clock)  |
+| LRCLK  | GPIO25 | Word Select                          |
+| SDIN   | GPIO2  | Data In                              |
 
 example config:
+
 ```
 i2s_config_t i2s_config = {
     .mode = I2S_MODE_MASTER | I2S_MODE_TX, // Only TX
